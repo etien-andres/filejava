@@ -4,6 +4,7 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.pdf.PdfWriter;
 import data_access.javaToPdf.Movimientos;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.sql.*;
@@ -15,20 +16,30 @@ import java.util.*;
 public class Conexion {
     public static ArrayList<String> datosFiscales=new ArrayList<>();
 
+
+    public static JPanel panel=new JPanel();
+    public static JTextField fecha_inittxt=new JTextField();
+    public static JTextField fecha_fintxt=new JTextField();
+
+
     public static void main(String[] args) {
         Double total=0D,fondostot=0D,efectivon=0D,tarjeta=0D, retirosn=0D,cajatot=0D,propEfect=0d,propTarj=0d, ventasSucur=0d,ventasRappi=0d,ventasUber=0d,cancelaciones=0d,combosYotros=0d,bebidas=0d,alimentos=0d,descuentos=0d;
-        int comens=0;
+        int comens=0,cantcancel=0;
         ArrayList<String> fechs=new ArrayList<>();
+
+        panel.add(fecha_inittxt);
+
 
         ArrayList<Movimientos> movimientosSucurs=new ArrayList<>();
         ArrayList<Movimientos> movimientosRappi=new ArrayList<>();
         ArrayList<Movimientos> movimientosUber=new ArrayList<>();
         ArrayList<Movimientos> movimientosCancel=new ArrayList<>();
+        ArrayList<Movimientos> totalmovimientos=new ArrayList<>();
 
 
 
-        String fechaventainit="01/11/18";
-        String fechaventafinal="30/11/18";
+        String fechaventainit="11/11/18";
+        String fechaventafinal="11/11/18";
         fechs.add(fechaventainit);
         fechs.add(fechaventafinal);
 
@@ -62,7 +73,7 @@ public class Conexion {
             con = DriverManager.getConnection(jdburlcaja,"sirka","3v-S1r;k4");
             Statement statement=con.createStatement();
 
-            ResultSet rs=statement.executeQuery("select  \"Producto Descripcion\",\"Importe CDesc\",\"Cantidad Venta\", \"Nombre Asociado\", \"Fecha Venta Periodo Activo\",\"Hora Creacion\",\"ID movimiento\",\"Mesa Venta\",\"Importe Cancela\", \"Precio Unitario SDesc\",BanderaProductoImpresora, \"Descuento Pesos\" from movimientos  where \"Producto Descripcion\" not in  ('Fondo de Caja','Botana de la Casa','Retiro Efectivo CParcial') and \"Fecha Venta Periodo Activo\" >='"+fechaventainit+"' and \"Fecha Venta Periodo Activo\" <='"+fechaventafinal+"' order by \"ID movimiento\"");
+            ResultSet rs=statement.executeQuery("select  \"Producto Descripcion\",\"Importe CDesc\",\"Cantidad Venta\", \"Nombre Asociado\", \"Fecha Venta Periodo Activo\",\"Hora Creacion\",\"ID movimiento\",\"Mesa Venta\",\"Importe Cancela\", \"Precio Unitario SDesc\",BanderaProductoImpresora, \"Descuento Pesos\",\"Cantidad Cancela\" from movimientos  where \"Producto Descripcion\" not in  ('Fondo de Caja','Botana de la Casa','Retiro Efectivo CParcial') and \"Fecha Venta Periodo Activo\" >='"+fechaventainit+"' and \"Fecha Venta Periodo Activo\" <='"+fechaventafinal+"' order by \"ID movimiento\"");
 
             if (rs.first()){
                 do {
@@ -75,9 +86,13 @@ public class Conexion {
                     double descs=rs.getDouble(12);
                     double cance=rs.getDouble(9);
                     Movimientos mov=new Movimientos(rs.getDate(5).toString(),Descrip,nombre,rs.getTime(6).toString(),rs.getString(8),importe,rs.getDouble(10),rs.getDouble(9),rs.getString(7),rs.getInt(3));
+                    totalmovimientos.add(mov);
                     if (cance>0){
+                        mov.setCantcanel(rs.getInt(13));
                         movimientosCancel.add(mov);
                     }
+                    cantcancel+=rs.getInt(13);
+
                     descuentos+=descs;
                     total+=importe;
                     Integer cant=rs.getInt(3);
@@ -94,6 +109,7 @@ public class Conexion {
                     }
                     cancelaciones+=rs.getDouble(9);
                     String mesa=rs.getString(8);
+
                     if (mesa.toUpperCase().contains("UBER")){
                         ventasUber+=importe;
                         movimientosUber.add(mov);
@@ -181,11 +197,12 @@ public class Conexion {
             }
             //System.out.println("fondos tot $"+fondostot);
             fondostotal.close();
-            ResultSet efectivo=stst.executeQuery("select \"Pago Total\",\"Cambio\",\"Pago Tarjeta\",PropinaEfectivo,PropinaTarjeta,ComensalesCantidad from VentasCaja where \"Estatus Venta\"='Pagada' and \"Fecha PeriodoActivo Actual\" >= '"+fechaventainit+"' and \"Fecha PeriodoActivo Actual\" <='"+fechaventafinal+"' ");
+            ResultSet efectivo=stst.executeQuery("select \"Pago Total\",\"Cambio\",\"Pago Tarjeta\",PropinaEfectivo,PropinaTarjeta,ComensalesCantidad from VentasCaja where \"Estatus Venta\"='Pagada' and \"Fecha Venta Periodo Activo\" >= '"+fechaventainit+"' and \"Fecha Venta Periodo Activo\" <='"+fechaventafinal+"' ");
             if (efectivo.first()){
                 do {
-                    efectivon+=(efectivo.getDouble(1)-efectivo.getDouble(2)-efectivo.getDouble(3)-efectivo.getDouble(4));
-                    tarjeta+=efectivo.getDouble(3)-efectivo.getDouble(5);
+                    System.out.println(efectivo.getDouble(1)+" "+efectivo.getDouble(2)+" "+efectivo.getDouble(3));
+                    efectivon+=(efectivo.getDouble(1)-efectivo.getDouble(2)-efectivo.getDouble(3));
+                    tarjeta+=efectivo.getDouble(3);
                     comens+=efectivo.getInt(6);
 
                 }while (efectivo.next());
@@ -275,8 +292,8 @@ public class Conexion {
             }
 
 
-
-
+        System.out.println(bebidas+" "+alimentos+" "+combosYotros);
+        System.out.println(cancelaciones+" "+cantcancel   );
 
         System.out.println();
         System.out.println("Ventas por asociado");
@@ -290,7 +307,7 @@ public class Conexion {
             System.out.println(str+"$"+x.total+" - "+df.format(percent)+"%");
         }
 
-        Datos_deVenta datos_deVenta=new Datos_deVenta(descuentos,combosYotros,bebidas,alimentos,cancelaciones,comens,propTarj,propEfect,total,fondostot,efectivon,tarjeta,cajatot,retirosn,ventasSucur,ventasRappi,ventasUber,prductos_concant,asociadoyTotals,movimientosSucurs,movimientosRappi,movimientosUber);
+        Datos_deVenta datos_deVenta=new Datos_deVenta(descuentos,combosYotros,bebidas,alimentos,cancelaciones,comens,propTarj,propEfect,total,fondostot,efectivon,tarjeta,cajatot,retirosn,ventasSucur,ventasRappi,ventasUber,prductos_concant,asociadoyTotals,movimientosSucurs,movimientosRappi,movimientosUber,totalmovimientos,tickets);
 
         try {
             String usr=System.getProperty("user.name");

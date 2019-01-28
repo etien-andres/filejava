@@ -3,7 +3,7 @@ package data_access.javaToPdf;
 public class Movimientos {
     String fecha,descrip,asociado,hora,mesaventa, id_Mov;
     Double importe,precio,cancela;
-    Integer cant;
+    Integer cant,cantcanel;
 
     public Movimientos(String fecha, String descrip, String asociado, String hora, String mesaventa, Double importe, Double precio, Double cancela, String id_Mov, Integer cant) {
         this.fecha = fecha;
@@ -16,6 +16,14 @@ public class Movimientos {
         this.cancela = cancela;
         this.id_Mov = id_Mov;
         this.cant = cant;
+    }
+
+    public Integer getCantcanel() {
+        return cantcanel;
+    }
+
+    public void setCantcanel(Integer cantcanel) {
+        this.cantcanel = cantcanel;
     }
 
     public String getFecha() {
