@@ -31,7 +31,7 @@ public class JAva_to_pdf {
 
     static String user=System.getProperty("user.name");
 
-     static String FILE = "C:/Users/"+user+"/Desktop/Reportes/Reporte Ventas.pdf";
+     static String FILE = "C:/Users/"+user+"/Desktop/Reportes/Reporte Ventas "+Conexion.sucursal+" del "+Conexion.fechaventainit+" al "+Conexion.fechaventafinal+".pdf";
      static Font catFont = new Font(Font.FontFamily.UNDEFINED, 18,
             Font.BOLD);
      static Font redFont = new Font(Font.FontFamily.UNDEFINED, 12,
@@ -61,13 +61,13 @@ public class JAva_to_pdf {
     }
 
      static void addContent(Document document, ArrayList<String> DatosSucur,ArrayList<String> fechass, Datos_deVenta datos_deVenta) throws DocumentException {
-         DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.GERMAN);
+         DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.ENGLISH);
          otherSymbols.setDecimalSeparator('.');
          NumberFormat nf = NumberFormat.getNumberInstance();
 
-         DecimalFormat df =  new DecimalFormat("####.##",otherSymbols);
+         DecimalFormat df =  new DecimalFormat("###,###,###,###.##",otherSymbols);
          df.setMaximumFractionDigits(2);
-
+         df.setMinimumFractionDigits(2);
          double totalcaja=datos_deVenta.efectivo+datos_deVenta.tarjeta+datos_deVenta.propEfect-datos_deVenta.retiros;
 
 
@@ -89,7 +89,12 @@ public class JAva_to_pdf {
          PdfPTable tabla_datos=new PdfPTable(2);
          PdfPCell celdaimagen=new PdfPCell();
          Image logoCliente=null;
+      Image top3=null;
          try {
+             top3=Image.getInstance("top3.jpg");
+
+             top3.scaleToFit(150,150);
+             top3.setAlignment(Element.ALIGN_CENTER);
              logoCliente=Image.getInstance("Files/EzBar&Food/LogoColor.png");
              logoCliente.scaleToFit(150,150);
              celdaimagen.addElement(logoCliente);
@@ -148,7 +153,7 @@ public class JAva_to_pdf {
          desc=new PdfPCell(new Phrase("+Fondos"));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
-         desc=new PdfPCell(new Phrase("$"+Double.toString(datos_deVenta.fondostot)));
+         desc=new PdfPCell(new Phrase("$ "+df.format(datos_deVenta.fondostot)));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
          desc=new PdfPCell(new Phrase("% "+df.format(getpercent(totalcaja,datos_deVenta.fondostot))));
@@ -164,7 +169,7 @@ public class JAva_to_pdf {
          desc=new PdfPCell(new Phrase("+Ventas efectivo:"));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
-         desc=new PdfPCell(new Phrase("$"+Double.toString(datos_deVenta.efectivo)));
+         desc=new PdfPCell(new Phrase("$ "+df.format(datos_deVenta.efectivo)));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
          desc=new PdfPCell(new Phrase("% "+df.format(getpercent(totalcaja,datos_deVenta.efectivo))));
@@ -180,7 +185,7 @@ public class JAva_to_pdf {
          desc=new PdfPCell(new Phrase("+Propinas efectivo:"));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
-         desc=new PdfPCell(new Phrase("$"+Double.toString(datos_deVenta.propEfect)));
+         desc=new PdfPCell(new Phrase("$ "+df.format(datos_deVenta.propEfect)));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
          desc=new PdfPCell(new Phrase("% "+df.format(getpercent(totalcaja,datos_deVenta.propEfect))));
@@ -196,7 +201,7 @@ public class JAva_to_pdf {
          desc=new PdfPCell(new Phrase("Total voucher:"));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
-         desc=new PdfPCell(new Phrase("$"+Double.toString(datos_deVenta.tarjeta)));
+         desc=new PdfPCell(new Phrase("$ "+df.format(datos_deVenta.tarjeta)));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
          desc=new PdfPCell(new Phrase("% "+df.format(getpercent(totalcaja,datos_deVenta.tarjeta))));
@@ -212,7 +217,7 @@ public class JAva_to_pdf {
          desc=new PdfPCell(new Phrase("+Ventas tarjeta:"));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
-         desc=new PdfPCell(new Phrase("$"+Double.toString(datos_deVenta.tarjeta-datos_deVenta.propTarjet)));
+         desc=new PdfPCell(new Phrase("$ "+df.format(datos_deVenta.tarjeta-datos_deVenta.propTarjet)));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
          desc=new PdfPCell(new Phrase("% "+df.format(getpercent(totalcaja,datos_deVenta.tarjeta))));
@@ -227,7 +232,7 @@ public class JAva_to_pdf {
          desc=new PdfPCell(new Phrase("+Propinas tarjeta:"));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
-         desc=new PdfPCell(new Phrase("$"+Double.toString(datos_deVenta.propTarjet)));
+         desc=new PdfPCell(new Phrase("$ "+df.format(datos_deVenta.propTarjet)));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
          desc=new PdfPCell(new Phrase("% "+df.format(getpercent(totalcaja,datos_deVenta.propTarjet))));
@@ -244,7 +249,7 @@ public class JAva_to_pdf {
          desc=new PdfPCell(new Phrase("-Retiros:"));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
-         desc=new PdfPCell(new Phrase("$"+Double.toString(datos_deVenta.retiros)));
+         desc=new PdfPCell(new Phrase("$ "+df.format(datos_deVenta.retiros)));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
          desc=new PdfPCell(new Phrase("% "+df.format(getpercent(totalcaja,datos_deVenta.retiros))));
@@ -264,7 +269,7 @@ public class JAva_to_pdf {
          desc=new PdfPCell(new Phrase("Total Caja"));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
-         desc=new PdfPCell(new Phrase("$"+Double.toString(totalcaja)));
+         desc=new PdfPCell(new Phrase("$ "+df.format(totalcaja)));
          desc.setHorizontalAlignment(Rectangle.LEFT);
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
@@ -295,7 +300,7 @@ public class JAva_to_pdf {
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
 
-         desc=new PdfPCell(new Phrase("$"+Double.toString(datos_deVenta.total+datos_deVenta.descuents+datos_deVenta.cancel)));
+         desc=new PdfPCell(new Phrase("$ "+df.format(datos_deVenta.total+datos_deVenta.descuents+datos_deVenta.cancel)));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
          desc=new PdfPCell(new Phrase("% "+df.format(getpercent(datos_deVenta.total+datos_deVenta.descuents+datos_deVenta.cancel,datos_deVenta.total+datos_deVenta.cancel+datos_deVenta.descuents))));
@@ -314,7 +319,7 @@ public class JAva_to_pdf {
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
 
-         desc=new PdfPCell(new Phrase("$"+Double.toString(datos_deVenta.ventas_suc)));
+         desc=new PdfPCell(new Phrase("$ "+df.format(datos_deVenta.ventas_suc)));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
 
@@ -332,7 +337,7 @@ public class JAva_to_pdf {
          desc=new PdfPCell(new Phrase("+Ventas Rappi:"));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
-         desc=new PdfPCell(new Phrase("$"+Double.toString(datos_deVenta.ventas_rapi)));
+         desc=new PdfPCell(new Phrase("$ "+df.format(datos_deVenta.ventas_rapi)));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
          desc=new PdfPCell(new Phrase("% "+df.format(getpercent(datos_deVenta.total+datos_deVenta.descuents+datos_deVenta.cancel,datos_deVenta.ventas_rapi))));
@@ -348,7 +353,7 @@ public class JAva_to_pdf {
          desc=new PdfPCell(new Phrase("+Ventas Uber:"));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
-         desc=new PdfPCell(new Phrase("$"+Double.toString(datos_deVenta.ventas_uber)));
+         desc=new PdfPCell(new Phrase("$ "+df.format(datos_deVenta.ventas_uber)));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
 
@@ -365,7 +370,7 @@ public class JAva_to_pdf {
          desc=new PdfPCell(new Phrase("-Descuentos:"));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
-         desc=new PdfPCell(new Phrase("$"+Double.toString(datos_deVenta.descuents)));
+         desc=new PdfPCell(new Phrase("$ "+df.format(datos_deVenta.descuents)));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
 
@@ -382,7 +387,7 @@ public class JAva_to_pdf {
          desc=new PdfPCell(new Phrase("-Cancelaciones:"));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
-         desc=new PdfPCell(new Phrase("$"+Double.toString(datos_deVenta.cancel)));
+         desc=new PdfPCell(new Phrase("$ "+df.format(datos_deVenta.cancel)));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
 
@@ -399,7 +404,7 @@ public class JAva_to_pdf {
          desc=new PdfPCell(new Phrase("Venta Neta:"));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
-         desc=new PdfPCell(new Phrase("$"+Double.toString(datos_deVenta.total)));
+         desc=new PdfPCell(new Phrase("$ "+df.format(datos_deVenta.total)));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
 
@@ -433,7 +438,7 @@ public class JAva_to_pdf {
          desc=new PdfPCell(new Phrase("Alimentos:"));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
-         desc=new PdfPCell(new Phrase("$"+Double.toString(datos_deVenta.alimentos)));
+         desc=new PdfPCell(new Phrase("$ "+df.format(datos_deVenta.alimentos)));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
 
@@ -450,7 +455,7 @@ public class JAva_to_pdf {
          desc=new PdfPCell(new Phrase("Bebidas:"));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
-         desc=new PdfPCell(new Phrase("$"+Double.toString(datos_deVenta.bebidas)));
+         desc=new PdfPCell(new Phrase("$ "+df.format(datos_deVenta.bebidas)));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
 
@@ -467,7 +472,7 @@ public class JAva_to_pdf {
          desc=new PdfPCell(new Phrase("Combos y otros:"));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
-         desc=new PdfPCell(new Phrase("$"+Double.toString(datos_deVenta.combosYotros)));
+         desc=new PdfPCell(new Phrase("$ "+df.format(datos_deVenta.combosYotros)));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
 
@@ -485,7 +490,7 @@ public class JAva_to_pdf {
          desc=new PdfPCell(new Phrase("Total:"));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
-         desc=new PdfPCell(new Phrase("$"+Double.toString(datos_deVenta.combosYotros+datos_deVenta.bebidas+datos_deVenta.alimentos)));
+         desc=new PdfPCell(new Phrase("$ "+df.format(datos_deVenta.combosYotros+datos_deVenta.bebidas+datos_deVenta.alimentos)));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
 
@@ -535,7 +540,11 @@ public class JAva_to_pdf {
          desc=new PdfPCell(new Phrase("Ticket inicial/Ticket final:"));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
-         desc=new PdfPCell(new Phrase(ticks.get(0)+" / "+ticks.get(ticks.size()-1)));
+         if (ticks.size()>0){
+            desc=new PdfPCell(new Phrase(ticks.get(0)+" / "+ticks.get(ticks.size()-1)));
+
+         }
+         else desc=new PdfPCell(new Phrase("-"));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
 
@@ -560,10 +569,10 @@ public class JAva_to_pdf {
          tabla_cuentas.addCell(desc);
 
          contenedor=new PdfPTable(2);
-         desc=new PdfPCell(new Phrase("Promedio  de venta por ticket:"));
+         desc=new PdfPCell(new Phrase("Promedio de venta por ticket:"));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
-         desc=new PdfPCell(new Phrase("$"+df.format(datos_deVenta.total/ticks.size())));
+         desc=new PdfPCell(new Phrase("$ "+df.format(datos_deVenta.total/ticks.size())));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
 
@@ -575,10 +584,10 @@ public class JAva_to_pdf {
 
 
          contenedor=new PdfPTable(2);
-         desc=new PdfPCell(new Phrase("Promedio  de venta por comensal:"));
+         desc=new PdfPCell(new Phrase("Promedio de venta por comensal:"));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
-         desc=new PdfPCell(new Phrase("$"+df.format(datos_deVenta.total/datos_deVenta.comens)));
+         desc=new PdfPCell(new Phrase("$ "+df.format(datos_deVenta.total/datos_deVenta.comens)));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
 
@@ -596,22 +605,27 @@ public class JAva_to_pdf {
 
          PdfPTable tabla_asociad=new PdfPTable(1);
          //tabla_ventaporprod.setHeaderRows(1);
-         Phrase asoc=new Phrase("Ventas por Asociado");
+      document.add(top3);
+      Phrase asoc=new Phrase("Ventas por Asociado");
          asoc.setFont(subFont);
-         desc=new PdfPCell(asoc);
-         desc.setHorizontalAlignment(Element.ALIGN_CENTER);
 
-         desc.setBackgroundColor(BaseColor.LIGHT_GRAY);
-         desc.setBorder(Rectangle.NO_BORDER);
+         desc=new PdfPCell(asoc);
+      desc.setHorizontalAlignment(Element.ALIGN_CENTER);
+
+      desc.setBackgroundColor(BaseColor.LIGHT_GRAY);
+      desc.setBorder(Rectangle.NO_BORDER);
+
 
 
          tabla_asociad.addCell(desc);
+
+
          for (AsociadoyTotal asociadoyTotal:datos_deVenta.asociadoyTotals){
              contenedor=new PdfPTable(3);
              desc=new PdfPCell(new Phrase(asociadoyTotal.asoc));
              desc.setBorder(Rectangle.NO_BORDER);
              contenedor.addCell(desc);
-             desc=new PdfPCell(new Phrase("$"+Double.toString(asociadoyTotal.total)));
+             desc=new PdfPCell(new Phrase("$ "+df.format(asociadoyTotal.total)));
              desc.setBorder(Rectangle.NO_BORDER);
              contenedor.addCell(desc);
 
@@ -635,7 +649,7 @@ public class JAva_to_pdf {
 
          PdfPTable tabla_productos=new PdfPTable(1);
          //tabla_ventaporprod.setHeaderRows(1);
-         Phrase prods=new Phrase("Productos Vendidos");
+         Phrase prods=new Phrase("Productos Vendidos (TOP TEN)");
          prods.setFont(subFont);
          desc=new PdfPCell(prods);
          desc.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -672,8 +686,9 @@ public class JAva_to_pdf {
          desc.addElement(contenedor);
          desc.setBackgroundColor(BaseColor.LIGHT_GRAY);
          tabla_productos.addCell(desc);
-
+        int cantdeprod=0;
         for (ProdyCant prodyCant:datos_deVenta.prodyCants){
+            if (cantdeprod>10) break;
             contenedor=new PdfPTable(4);
 
             desc=new PdfPCell(new Phrase(prodyCant.prod));
@@ -687,7 +702,7 @@ public class JAva_to_pdf {
             contenedor.addCell(desc);
 
 
-            desc=new PdfPCell(new Phrase("$"+prodyCant.venta));
+            desc=new PdfPCell(new Phrase("$ "+df.format(prodyCant.venta)));
             desc.setBorder(Rectangle.NO_BORDER);
             contenedor.addCell(desc);
 
@@ -699,119 +714,120 @@ public class JAva_to_pdf {
             desc.addElement(contenedor);
 
             tabla_productos.addCell(desc);
+            cantdeprod++;
 
         }
 
          document.add(tabla_productos);
 
-        document.add(blanco);
-        document.newPage();
+        //document.add(blanco);
+        //document.newPage();
 
-         PdfPTable tabla_movimients=new PdfPTable(1);
-         //tabla_ventaporprod.setHeaderRows(1);
-         Phrase movs=new Phrase("Movimientos:");
-         movs.setFont(subFont);
-         desc=new PdfPCell(movs);
-         desc.setHorizontalAlignment(Element.ALIGN_CENTER);
-
-         desc.setBackgroundColor(BaseColor.LIGHT_GRAY);
-         desc.setBorder(Rectangle.NO_BORDER);
-
-
-         tabla_movimients.addCell(desc);
-
-         contenedor=new PdfPTable(7);
-
-         desc=new PdfPCell(new Phrase("Ticket"));
-         desc.setBorder(Rectangle.NO_BORDER);
-         contenedor.addCell(desc);
-
-         desc=new PdfPCell(new Phrase("Fecha"));
-         desc.setBorder(Rectangle.NO_BORDER);
-         contenedor.addCell(desc);
-
-         desc=new PdfPCell(new Phrase("Hora"));
-         desc.setBorder(Rectangle.NO_BORDER);
-         contenedor.addCell(desc);
-
-
-         desc=new PdfPCell(new Phrase("Desc."));
-         desc.setBorder(Rectangle.NO_BORDER);
-         contenedor.addCell(desc);
-
-         desc=new PdfPCell(new Phrase("Importe"));
-         desc.setBorder(Rectangle.NO_BORDER);
-         contenedor.addCell(desc);
-
-         desc=new PdfPCell(new Phrase("Mesa"));
-         desc.setBorder(Rectangle.NO_BORDER);
-         contenedor.addCell(desc);
-
-         desc=new PdfPCell(new Phrase("Usuario"));
-         desc.setBorder(Rectangle.NO_BORDER);
-         contenedor.addCell(desc);
-
-         desc=new PdfPCell();
-         desc.setBorder(Rectangle.NO_BORDER);
-         desc.addElement(contenedor);
-         desc.setBackgroundColor(BaseColor.LIGHT_GRAY);
-         tabla_movimients.addCell(desc);
-
-         for (Movimientos mov:datos_deVenta.movimientostotal){
-             contenedor=new PdfPTable(7);
-
-             desc=new PdfPCell(new Phrase(mov.getId_Mov()));
-             desc.setBorder(Rectangle.NO_BORDER);
-             desc.setHorizontalAlignment(Element.ALIGN_LEFT);
-
-             contenedor.addCell(desc);
-
-             desc=new PdfPCell(new Phrase(mov.getFecha()));
-             desc.setBorder(Rectangle.NO_BORDER);
-             desc.setHorizontalAlignment(Element.ALIGN_LEFT);
-
-             contenedor.addCell(desc);
-
-             desc=new PdfPCell(new Phrase(mov.getHora()));
-             desc.setBorder(Rectangle.NO_BORDER);
-             desc.setHorizontalAlignment(Element.ALIGN_LEFT);
-
-             contenedor.addCell(desc);
-
-
-             desc=new PdfPCell(new Phrase(mov.getDescrip()));
-             desc.setBorder(Rectangle.NO_BORDER);
-             desc.setHorizontalAlignment(Element.ALIGN_LEFT);
-
-             contenedor.addCell(desc);
-
-             desc=new PdfPCell(new Phrase(Double.toString(mov.getImporte())));
-             desc.setBorder(Rectangle.NO_BORDER);
-             desc.setHorizontalAlignment(Element.ALIGN_LEFT);
-
-             contenedor.addCell(desc);
-
-             desc=new PdfPCell(new Phrase(mov.getMesaventa()));
-             desc.setBorder(Rectangle.NO_BORDER);
-             desc.setHorizontalAlignment(Element.ALIGN_LEFT);
-
-             contenedor.addCell(desc);
-
-             desc=new PdfPCell(new Phrase(mov.getAsociado()));
-             desc.setBorder(Rectangle.NO_BORDER);
-             desc.setHorizontalAlignment(Element.ALIGN_LEFT);
-
-             contenedor.addCell(desc);
-
-             desc=new PdfPCell();
-             desc.setBorder(Rectangle.NO_BORDER);
-             desc.addElement(contenedor);
-             desc.setHorizontalAlignment(Rectangle.LEFT);
-             tabla_movimients.addCell(desc);
-
-         }
-
-         document.add(tabla_movimients);
+//         PdfPTable tabla_movimients=new PdfPTable(1);
+//         //tabla_ventaporprod.setHeaderRows(1);
+//         Phrase movs=new Phrase("Movimientos:");
+//         movs.setFont(subFont);
+//         desc=new PdfPCell(movs);
+//         desc.setHorizontalAlignment(Element.ALIGN_CENTER);
+//
+//         desc.setBackgroundColor(BaseColor.LIGHT_GRAY);
+//         desc.setBorder(Rectangle.NO_BORDER);
+//
+//
+//         tabla_movimients.addCell(desc);
+//
+//         contenedor=new PdfPTable(7);
+//
+//         desc=new PdfPCell(new Phrase("Ticket"));
+//         desc.setBorder(Rectangle.NO_BORDER);
+//         contenedor.addCell(desc);
+//
+//         desc=new PdfPCell(new Phrase("Fecha"));
+//         desc.setBorder(Rectangle.NO_BORDER);
+//         contenedor.addCell(desc);
+//
+//         desc=new PdfPCell(new Phrase("Hora"));
+//         desc.setBorder(Rectangle.NO_BORDER);
+//         contenedor.addCell(desc);
+//
+//
+//         desc=new PdfPCell(new Phrase("Desc."));
+//         desc.setBorder(Rectangle.NO_BORDER);
+//         contenedor.addCell(desc);
+//
+//         desc=new PdfPCell(new Phrase("Importe"));
+//         desc.setBorder(Rectangle.NO_BORDER);
+//         contenedor.addCell(desc);
+//
+//         desc=new PdfPCell(new Phrase("Mesa"));
+//         desc.setBorder(Rectangle.NO_BORDER);
+//         contenedor.addCell(desc);
+//
+//         desc=new PdfPCell(new Phrase("Usuario"));
+//         desc.setBorder(Rectangle.NO_BORDER);
+//         contenedor.addCell(desc);
+//
+//         desc=new PdfPCell();
+//         desc.setBorder(Rectangle.NO_BORDER);
+//         desc.addElement(contenedor);
+//         desc.setBackgroundColor(BaseColor.LIGHT_GRAY);
+//         tabla_movimients.addCell(desc);
+//
+//         for (Movimientos mov:datos_deVenta.movimientostotal){
+//             contenedor=new PdfPTable(7);
+//
+//             desc=new PdfPCell(new Phrase(mov.getId_Mov()));
+//             desc.setBorder(Rectangle.NO_BORDER);
+//             desc.setHorizontalAlignment(Element.ALIGN_LEFT);
+//
+//             contenedor.addCell(desc);
+//
+//             desc=new PdfPCell(new Phrase(mov.getFecha()));
+//             desc.setBorder(Rectangle.NO_BORDER);
+//             desc.setHorizontalAlignment(Element.ALIGN_LEFT);
+//
+//             contenedor.addCell(desc);
+//
+//             desc=new PdfPCell(new Phrase(mov.getHora()));
+//             desc.setBorder(Rectangle.NO_BORDER);
+//             desc.setHorizontalAlignment(Element.ALIGN_LEFT);
+//
+//             contenedor.addCell(desc);
+//
+//
+//             desc=new PdfPCell(new Phrase(mov.getDescrip()));
+//             desc.setBorder(Rectangle.NO_BORDER);
+//             desc.setHorizontalAlignment(Element.ALIGN_LEFT);
+//
+//             contenedor.addCell(desc);
+//
+//             desc=new PdfPCell(new Phrase(Double.toString(mov.getImporte())));
+//             desc.setBorder(Rectangle.NO_BORDER);
+//             desc.setHorizontalAlignment(Element.ALIGN_LEFT);
+//
+//             contenedor.addCell(desc);
+//
+//             desc=new PdfPCell(new Phrase(mov.getMesaventa()));
+//             desc.setBorder(Rectangle.NO_BORDER);
+//             desc.setHorizontalAlignment(Element.ALIGN_LEFT);
+//
+//             contenedor.addCell(desc);
+//
+//             desc=new PdfPCell(new Phrase(mov.getAsociado()));
+//             desc.setBorder(Rectangle.NO_BORDER);
+//             desc.setHorizontalAlignment(Element.ALIGN_LEFT);
+//
+//             contenedor.addCell(desc);
+//
+//             desc=new PdfPCell();
+//             desc.setBorder(Rectangle.NO_BORDER);
+//             desc.addElement(contenedor);
+//             desc.setHorizontalAlignment(Rectangle.LEFT);
+//             tabla_movimients.addCell(desc);
+//
+//         }
+//
+//         document.add(tabla_movimients);
 
 
 
