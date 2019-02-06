@@ -3,13 +3,6 @@ package data_access;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.pdf.PdfWriter;
 import data_access.javaToPdf.Movimientos;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
 
 import javax.swing.*;
 import java.io.File;
@@ -29,8 +22,8 @@ public class Conexion {
 
 
 
-    public static String fechaventainit="31-01-19";
-    public static String fechaventafinal="31-01-19";
+    public static String fechaventainit="06-02-19";
+    public static String fechaventafinal="06-02-19";
     public static String sucursal="";
 
     public static void main(String[] args) {
@@ -127,10 +120,10 @@ public class Conexion {
             con = DriverManager.getConnection(jdburlcaja,"sirka","3v-S1r;k4");
             Statement statement=con.createStatement();
             //En este query se obtienen los datos de movimientos
-            ResultSet rs=statement.executeQuery("select  \"Producto Descripcion\",\"Importe CDesc\",\"Cantidad Venta\", \"Nombre Asociado\", \"Fecha Venta Periodo Activo\",\"Hora Creacion\",\"ID movimiento\",\"Mesa Venta\",\"Importe Cancela\", \"Precio Unitario SDesc\",BanderaProductoImpresora, \"Cantidad Descuentos\",\"Cantidad Cancela\" from movimientos  where \"Producto Descripcion\" not in  ('Fondo de Caja','Botana de la Casa','Retiro Efectivo CParcial') and \"Fecha Venta Periodo Activo\" >='"+fechaventainit+"' and \"Fecha Venta Periodo Activo\" <='"+fechaventafinal+"' order by \"ID movimiento\"");
-
+            ResultSet rs=statement.executeQuery("select  \"Producto Descripcion\",\"Importe CDesc\",\"Cantidad Venta\", \"Nombre Asociado\", \"Fecha Venta Periodo Activo\",\"Hora Creacion\",\"ID movimiento\",\"Mesa Venta\",\"Importe Cancela\", \"Precio Unitario SDesc\",BanderaProductoImpresora, \"Cantidad Descuentos\",\"Descuento Pesos\",\"Precio Unitario SDesc\" from movimientos  where \"Producto Descripcion\" not in  ('Fondo de Caja','Botana de la Casa','Retiro Efectivo CParcial') and \"Fecha Venta Periodo Activo\" >='"+fechaventainit+"' and \"Fecha Venta Periodo Activo\" <='"+fechaventafinal+"' order by \"ID movimiento\"");
             if (rs.first()){
                 do {
+
                     String impresora="";
 
                     String nombre=rs.getString(4);
@@ -165,13 +158,13 @@ public class Conexion {
                     String mesa=rs.getString(8);
 
                     if (impresora==null){
-                        combosYotros+=importe;
+                        combosYotros+=rs.getDouble(14);
                     }
                     else if (impresora.toUpperCase().contains("BARRA")){
-                        bebidas+=importe;
+                        bebidas+=rs.getDouble(14);
                     }
                     else if (impresora.toUpperCase().contains("COCINA")){
-                        alimentos+=importe;
+                        alimentos+=rs.getDouble(14);
                     }
 
 
@@ -220,7 +213,7 @@ public class Conexion {
 
             for (String b:usuarios){
                 Statement sts=con.createStatement();
-                ResultSet rss=sts.executeQuery("SELECT \"Importe CDesc\" from movimientos where  \"Nombre Asociado\"='"+b+"' and \"Fecha Venta Periodo Activo\">='"+fechaventainit+"' and \"Fecha Venta Periodo Activo\" <='"+fechaventafinal+"' order by \"Producto Descripcion\"");
+                ResultSet rss=sts.executeQuery("SELECT \"Importe CDesc\",\"Nombre Asociado\" from movimientos where  \"Nombre Asociado\"='"+b+"' and \"Fecha Venta Periodo Activo\">='"+fechaventainit+"' and \"Fecha Venta Periodo Activo\" <='"+fechaventafinal+"' order by \"Producto Descripcion\"");
                 double y=0D;
                 if (rss.first()){
                     do {
@@ -274,11 +267,19 @@ public class Conexion {
                 }while (retiros.next());
             }
             retiros.close();
-            ResultSet propinas=stst.executeQuery("SELECT PropinaEfectivo,PropinaTarjeta from VentasCaja where \"Fecha Venta Periodo Activo\">='"+fechaventainit+"' and \"Fecha Venta Periodo Activo\" <='"+fechaventafinal+"' ");
+            ResultSet propinas=stst.executeQuery("SELECT PropinaEfectivo,PropinaTarjeta, \"Descuento Global\",\"Total Venta\",\"Pago Total\",\"Mesa Venta\" from VentasCaja where \"Fecha Venta Periodo Activo\">='"+fechaventainit+"' and \"Fecha Venta Periodo Activo\" <='"+fechaventafinal+"' and \"Estatus Venta\"='Pagada' ");
             if (propinas.first()){
                 do {
                     propEfect+=propinas.getDouble(1);
                     propTarj+=propinas.getDouble(2);
+                    descuentos+=propinas.getDouble(3);
+                    double pagotot,totalvent;
+                    pagotot=propinas.getDouble(5);
+                    totalvent=propinas.getDouble(4);
+                    if (pagotot<totalvent&&pagotot==0&&!propinas.getString(6).toUpperCase().contains("RAPPI")&&!propinas.getString(6).toUpperCase().contains("DELANT")&&!propinas.getString(6).toUpperCase().contains("UBER")) {
+                        System.out.println(totalvent);
+                        descuentos+=totalvent;
+                    }
                 }while (propinas.next());
             }
 

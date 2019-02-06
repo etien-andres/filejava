@@ -300,10 +300,10 @@ public class JAva_to_pdf {
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
 
-         desc=new PdfPCell(new Phrase("$ "+df.format(datos_deVenta.total+datos_deVenta.descuents+datos_deVenta.cancel)));
+         desc=new PdfPCell(new Phrase("$ "+df.format(datos_deVenta.total+datos_deVenta.cancel)));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
-         desc=new PdfPCell(new Phrase("% "+df.format(getpercent(datos_deVenta.total+datos_deVenta.descuents+datos_deVenta.cancel,datos_deVenta.total+datos_deVenta.cancel+datos_deVenta.descuents))));
+         desc=new PdfPCell(new Phrase("% "+df.format(getpercent(datos_deVenta.total+datos_deVenta.cancel,datos_deVenta.total+datos_deVenta.cancel))));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
          desc=new PdfPCell();
@@ -323,7 +323,7 @@ public class JAva_to_pdf {
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
 
-         desc=new PdfPCell(new Phrase("% "+df.format(getpercent(datos_deVenta.total+datos_deVenta.descuents+datos_deVenta.cancel,datos_deVenta.ventas_suc))));
+         desc=new PdfPCell(new Phrase("% "+df.format(getpercent(datos_deVenta.total,datos_deVenta.ventas_suc))));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
 
@@ -340,7 +340,7 @@ public class JAva_to_pdf {
          desc=new PdfPCell(new Phrase("$ "+df.format(datos_deVenta.ventas_rapi)));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
-         desc=new PdfPCell(new Phrase("% "+df.format(getpercent(datos_deVenta.total+datos_deVenta.descuents+datos_deVenta.cancel,datos_deVenta.ventas_rapi))));
+         desc=new PdfPCell(new Phrase("% "+df.format(getpercent(datos_deVenta.total,datos_deVenta.ventas_rapi))));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
          desc=new PdfPCell();
@@ -357,7 +357,7 @@ public class JAva_to_pdf {
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
 
-         desc=new PdfPCell(new Phrase("% "+df.format(getpercent(datos_deVenta.total+datos_deVenta.descuents+datos_deVenta.cancel,datos_deVenta.ventas_uber))));
+         desc=new PdfPCell(new Phrase("% "+df.format(getpercent(datos_deVenta.total,datos_deVenta.ventas_uber))));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
          desc=new PdfPCell();
@@ -374,7 +374,7 @@ public class JAva_to_pdf {
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
 
-         desc=new PdfPCell(new Phrase("% "+df.format(getpercent(datos_deVenta.total+datos_deVenta.descuents+datos_deVenta.cancel,datos_deVenta.descuents))));
+         desc=new PdfPCell(new Phrase("% "+df.format(getpercent(datos_deVenta.total,datos_deVenta.descuents))));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
          desc=new PdfPCell();
@@ -391,7 +391,7 @@ public class JAva_to_pdf {
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
 
-         desc=new PdfPCell(new Phrase("% "+df.format(getpercent(datos_deVenta.total+datos_deVenta.descuents+datos_deVenta.cancel,datos_deVenta.cancel))));
+         desc=new PdfPCell(new Phrase("% "+df.format(getpercent(datos_deVenta.total,datos_deVenta.cancel))));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
          desc=new PdfPCell();
@@ -404,7 +404,7 @@ public class JAva_to_pdf {
          desc=new PdfPCell(new Phrase("Venta Neta:"));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
-         desc=new PdfPCell(new Phrase("$ "+df.format(datos_deVenta.total)));
+         desc=new PdfPCell(new Phrase("$ "+df.format(datos_deVenta.total-datos_deVenta.descuents)));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
 
@@ -442,7 +442,7 @@ public class JAva_to_pdf {
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
 
-         desc=new PdfPCell(new Phrase("% "+df.format(getpercent((datos_deVenta.alimentos+datos_deVenta.bebidas+datos_deVenta.combosYotros),datos_deVenta.alimentos))));
+         desc=new PdfPCell(new Phrase("% "+df.format(getpercent((datos_deVenta.alimentos+datos_deVenta.descuents+datos_deVenta.bebidas+datos_deVenta.combosYotros),datos_deVenta.alimentos))));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
          desc=new PdfPCell();
@@ -459,7 +459,7 @@ public class JAva_to_pdf {
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
 
-         desc=new PdfPCell(new Phrase("% "+df.format(getpercent(datos_deVenta.alimentos+datos_deVenta.bebidas+datos_deVenta.combosYotros,datos_deVenta.bebidas))));
+         desc=new PdfPCell(new Phrase("% "+df.format(getpercent(datos_deVenta.alimentos+datos_deVenta.descuents+datos_deVenta.bebidas+datos_deVenta.combosYotros,datos_deVenta.bebidas))));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
          desc=new PdfPCell();
@@ -476,7 +476,7 @@ public class JAva_to_pdf {
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
 
-         desc=new PdfPCell(new Phrase("% "+df.format(getpercent(datos_deVenta.alimentos+datos_deVenta.bebidas+datos_deVenta.combosYotros,datos_deVenta.combosYotros))));
+         desc=new PdfPCell(new Phrase("% "+df.format(getpercent(datos_deVenta.alimentos+datos_deVenta.descuents+datos_deVenta.bebidas+datos_deVenta.combosYotros,datos_deVenta.combosYotros))));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
          desc=new PdfPCell();
@@ -485,9 +485,43 @@ public class JAva_to_pdf {
 
          tabla_ventaporprod.addCell(desc);
 
+        contenedor=new PdfPTable(3);
+        desc=new PdfPCell(new Phrase("Cancelados:"));
+        desc.setBorder(Rectangle.NO_BORDER);
+        contenedor.addCell(desc);
+        desc=new PdfPCell(new Phrase("$ "+df.format(datos_deVenta.cancel)));
+        desc.setBorder(Rectangle.NO_BORDER);
+        contenedor.addCell(desc);
+
+        desc=new PdfPCell(new Phrase("% "+df.format(getpercent(datos_deVenta.alimentos+datos_deVenta.descuents+datos_deVenta.bebidas+datos_deVenta.combosYotros,datos_deVenta.cancel))));
+        desc.setBorder(Rectangle.NO_BORDER);
+        contenedor.addCell(desc);
+        desc=new PdfPCell();
+        desc.setBorder(Rectangle.NO_BORDER);
+        desc.addElement(contenedor);
+
+        tabla_ventaporprod.addCell(desc);
+
+        contenedor=new PdfPTable(3);
+        desc=new PdfPCell(new Phrase("Descontados:"));
+        desc.setBorder(Rectangle.NO_BORDER);
+        contenedor.addCell(desc);
+        desc=new PdfPCell(new Phrase("$ "+df.format(datos_deVenta.descuents)));
+        desc.setBorder(Rectangle.NO_BORDER);
+        contenedor.addCell(desc);
+
+        desc=new PdfPCell(new Phrase("% "+df.format(getpercent(datos_deVenta.alimentos+datos_deVenta.bebidas+datos_deVenta.combosYotros+datos_deVenta.descuents,datos_deVenta.descuents))));
+        desc.setBorder(Rectangle.NO_BORDER);
+        contenedor.addCell(desc);
+        desc=new PdfPCell();
+        desc.setBorder(Rectangle.NO_BORDER);
+        desc.addElement(contenedor);
+
+        tabla_ventaporprod.addCell(desc);
+
 
          contenedor=new PdfPTable(2);
-         desc=new PdfPCell(new Phrase("Total:"));
+         desc=new PdfPCell(new Phrase("Subtotal:"));
          desc.setBorder(Rectangle.NO_BORDER);
          contenedor.addCell(desc);
          desc=new PdfPCell(new Phrase("$ "+df.format(datos_deVenta.combosYotros+datos_deVenta.bebidas+datos_deVenta.alimentos)));
@@ -499,6 +533,19 @@ public class JAva_to_pdf {
          desc.addElement(contenedor);
 
          tabla_ventaporprod.addCell(desc);
+        contenedor=new PdfPTable(2);
+        desc=new PdfPCell(new Phrase("Total Venta:"));
+        desc.setBorder(Rectangle.NO_BORDER);
+        contenedor.addCell(desc);
+        desc=new PdfPCell(new Phrase("$ "+df.format(datos_deVenta.combosYotros+datos_deVenta.bebidas+datos_deVenta.alimentos-datos_deVenta.cancel-datos_deVenta.descuents)));
+        desc.setBorder(Rectangle.NO_BORDER);
+        contenedor.addCell(desc);
+
+        desc=new PdfPCell();
+        desc.setBorder(Rectangle.NO_BORDER);
+        desc.addElement(contenedor);
+
+        tabla_ventaporprod.addCell(desc);
 
          document.add(tabla_ventaporprod);
 
@@ -606,7 +653,7 @@ public class JAva_to_pdf {
          PdfPTable tabla_asociad=new PdfPTable(1);
          //tabla_ventaporprod.setHeaderRows(1);
       document.add(top3);
-      Phrase asoc=new Phrase("Ventas por Asociado");
+      Phrase asoc=new Phrase("Ventas por Asociado (Sin descuentos)");
          asoc.setFont(subFont);
 
          desc=new PdfPCell(asoc);
